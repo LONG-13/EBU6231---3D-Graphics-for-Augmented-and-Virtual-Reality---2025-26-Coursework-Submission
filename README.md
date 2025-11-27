@@ -1,20 +1,56 @@
-# EBU6231---3D-Graphics-for-Augmented-and-Virtual-Reality---2025-26-Coursework-Submission
-EBU6231 - 3D Graphics for Augmented and Virtual Reality - 2025/26 Coursework Submission
+# OpenGL Voxel Self-Portrait
 
+这是一个基于 OpenGL + GLFW + GLAD 的示例程序，用于将用户提供的真人照片体素化为像素风格 3D 自画像，并在场景中渲染像素风格姓名模型（默认 `LONG`）。程序使用 Windows GDI+ 加载图片并生成体素。
 
-通过网盘分享的文件：submission_221171121.zip
-链接: https://pan.baidu.com/s/1GHawd7e3H-Zgqh2d9s_YcA?pwd=sati 提取码: sati
---来自百度网盘超级会员v5的分享
+主要特性
+- 从 `portrait.png` 或命令行第 1 个参数加载照片并下采样为体素（默认宽度 28~32），生成 `personVoxels`。
+- 基于简单 5x5 字形或命令行第 2 个参数生成姓名体素（`nameVoxels`），默认 `LONG`。
+- 场景包含地面和平滑环绕摄像机动画。
+- 右键打开白底黑字菜单选择动作：立正 / 走动 / 挥手。
+- 支持通过鼠标拖拽和键盘（方向键 + PageUp/PageDown）移动姓名体素，移动被限制在半条腿长度范围内。
 
-老师您好，我已经将我所做的全部内容全部打包上传至百度网盘，
-点击此链接并输入4位密码即可打开并下载我的全部资料，过程有些复杂，感谢老师的理解与支持，
-这个个任务对我来说完成度很困难，但是这个分数依旧很重要，
-在我不懈努力之下终于完成这个项目，请老师过目！
-如果链接打不开请您随时联系我即可，我会第一时间检查我的文件可靠性并进行重新上传！
+使用说明
 
-English Version
-Dear Sir/Madam, I have now uploaded all my completed work to Baidu Netdisk.
-Please click this link and enter the 4-digit password to access and download all my materials. The process is somewhat complex, and I thank you for your understanding and support.
-This assignment proved exceptionally challenging for me to complete, yet the grade remains crucial.
-Through persistent effort, I have finally finished this project. I kindly request your review!
-Should the link prove inaccessible, please do not hesitate to contact me. I shall promptly verify the integrity of my files and re-upload them without delay.
+先确保在 Windows 环境下（程序使用 GDI+），并已安装依赖（GLFW/GLAD 已包含在此工程的 CMake 配置中）。
+
+构建：
+```powershell
+cmake --build build --config Debug
+```
+
+运行：
+1. 将要使用的照片命名为 `portrait.png` 放在工程根目录，或在命令行中传入图片路径作为第一个参数。
+2. 可选地，将姓名作为第二个参数传入（ASCII 字母），示例：
+```powershell
+.\build\Debug\OpenGL_GLAD_Project.exe "E:\path\to\your\photo.png" "XIAO"
+```
+
+注意：控制台可能无法正确显示中文（编码问题），但程序窗口内的中文菜单为纹理绘制不会受影响。
+
+文件和重要位置
+- 源代码：`src/main.cpp`
+- 默认图片：`portrait.png`（未包含，请自行放置）
+
+可配置点（代码中）：
+- `load_person_image_and_build_voxels(path, targetW)` 中的 `targetW` 控制下采样宽度（像素化程度），值越大模型越精细但体素更多。
+- 拖拽灵敏度：`cursor_pos_callback` 中 `scale`（单位世界/像素）用于屏幕位移到世界位移的映射。
+
+如何生成演示视频（手动录制）
+1. 启动程序并等待场景稳定。
+2. 使用 Windows Game Bar（Win+G）或 OBS 进行 1~2 分钟录制，展示：
+   - 环绕镜头（程序已自动环绕）
+   - 切换动作（右键菜单选择立正/走动/挥手）
+   - 拖拽姓名体素或使用方向键移动展示交互
+3. 若视频大于 50MB，可上传到任意网盘并分享下载链接。
+
+后续可选改进（我可以代为实现）
+- 使用面部检测或手动标注区域对人脸做更高分辨率的体素化，提升还原度。
+- 使用字体渲染（GDI 或 FreeType）将任意姓名栅格化后体素化，支持中文姓名。
+- 实现射线-平面相交的拖拽映射以获得更真实的拖动体验。
+- 集成 Dear ImGui 以获得更完善的 UI、配置和字体支持。
+
+版权与免责声明
+该项目仅用于演示与学习，生成的体素模型基于用户提供的照片，请勿用于未经授权的公开分发。
+
+---
+如果你希望我继续执行某一项改进（例如：更高精度体素化、射线拖拽、字体体素化或打包发布），请直接回复所需项，我会继续实现并在完成后进行构建与验证。
